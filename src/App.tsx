@@ -292,7 +292,7 @@ const siteData = {
 
 const iconMap = { Home, Layers, BarChart3, FileText, ImageIcon };
 
-const NavBar = ({ activeTab, setActiveTab }) => {
+const NavBar = ({ activeTab, setActiveTab }: any) => {
   return (
     <nav className="sticky top-0 z-50 bg-[#FFD074] border-b-[3px] border-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
