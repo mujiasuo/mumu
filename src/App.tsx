@@ -19,7 +19,6 @@ import {
 // ==========================================
 const siteData = {
   global: {
-    logoImg: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg", 
     logoText: "是有集团",
     qrCodeImg: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com", 
     qrCodeText: "手机扫码查看",
@@ -236,7 +235,41 @@ const siteData = {
       { name: '井冈山', sample: 2, order: 2 },
       { name: '周庄', sample: 2, order: 2 },
       { name: '奥体', sample: 7, order: 0 },
-    ]
+    ],
+    // 新增：产出比例数据
+    proportionData: {
+      title: "项目组产出比例",
+      items: [
+        { id: 'pioneer', name: '先锋项目组', count: 31, percentage: 40, colorClass: 'bg-[#FF90E8]' },
+        { id: 'shanghai', name: '上海项目组', count: 8, percentage: 10, colorClass: 'bg-[#26D0CE]' },
+        { id: 'others', name: '其他文博/文旅组', count: 39, percentage: 50, colorClass: 'bg-[#38E662]' },
+      ]
+    },
+    // 新增：异常与搁置项目归因数据
+    anomalyData: {
+      title: "异常与搁置项目归因",
+      items: [
+        { id: 'reason1', name: '题材创意与版权规避', percentage: 30, colorClass: 'bg-[#FF90E8]' },
+        { id: 'reason2', name: '市场表现预判与打样效果不佳', percentage: 30, colorClass: 'bg-[#26D0CE]' },
+        { id: 'reason3', name: '成本超标与结构风险', percentage: 20, colorClass: 'bg-[#FFD074]' },
+        { id: 'reason4', name: '客户侧审核未通过', percentage: 20, colorClass: 'bg-[#38E662]' },
+      ]
+    },
+    // 新增：品类产出占比数据
+    categoryData: {
+      title: "品类产出占比",
+      items: [
+        { id: 'cat1', name: '金属冰箱贴', percentage: 17.9, colorClass: 'bg-[#FF90E8]' },
+        { id: 'cat2', name: '拼装翻页万年历', percentage: 7.7, colorClass: 'bg-[#26D0CE]' },
+        { id: 'cat3', name: '立体摆件', percentage: 9.0, colorClass: 'bg-[#FFD074]' },
+        { id: 'cat4', name: '毛绒系列', percentage: 5.1, colorClass: 'bg-[#38E662]' },
+        { id: 'cat5', name: '陈列与定制展架物料', percentage: 24.4, colorClass: 'bg-[#FF90E8]' },
+        { id: 'cat6', name: '轻量金属周边（挂件/钥匙扣/书签/开瓶器）', percentage: 14.1, colorClass: 'bg-[#26D0CE]' },
+        { id: 'cat7', name: '非金属/特种材质冰箱贴（木质/玻璃/纸本/NFC）', percentage: 10.3, colorClass: 'bg-[#FFD074]' },
+        { id: 'cat8', name: '亚克力轻小周边', percentage: 3.8, colorClass: 'bg-[#38E662]' },
+        { id: 'cat9', name: '其他综合补充类（零星项）', percentage: 7.7, colorClass: 'bg-[#FF90E8]' },
+      ]
+    }
   },
   analysis: {
     sections: [
@@ -267,11 +300,13 @@ const siteData = {
     },
     sop: {
       title: "拼装翻页万年历SOP",
-      steps: [
-        { id: 1, title: '工艺流转步骤 1', desc: '相关的刀模线文件与打样材质说明...' },
-        { id: 2, title: '工艺流转步骤 2', desc: '相关的刀模线文件与打样材质说明...' },
-        { id: 3, title: '工艺流转步骤 3', desc: '相关的刀模线文件与打样材质说明...' },
-        { id: 4, title: '工艺流转步骤 4', desc: '相关的刀模线文件与打样材质说明...' }
+      // 将原来的 steps 步骤文本，替换为你想展示的 PDF 导出的多张长图或图片合集
+      // 建议将 PDF 的每一页导成图片，把链接依次放进下面这个数组里
+      images: [
+        "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1512295767273-ac109ac3acfa?q=80&w=600&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=600&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1626282874430-c11ae32d2898?q=80&w=600&auto=format&fit=crop"
       ]
     },
     plugins: {
@@ -296,20 +331,17 @@ const NavBar = ({ activeTab, setActiveTab }: any) => {
   return (
     <nav className="sticky top-0 z-50 bg-[#FFD074] border-b-[3px] border-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <img 
-              src={siteData.global.logoImg} 
-              alt="Logo" 
-              className="w-10 h-10 object-contain hover:scale-110 hover:-rotate-12 transition-transform duration-200"
-              style={{ filter: 'drop-shadow(3px 3px 0px #000)' }}
-            />
-            <span className="font-black tracking-wider text-black text-lg uppercase ml-2">
+        {/* 改为移动端上下结构，PC端左右结构 */}
+        <div className="flex flex-col md:flex-row items-center justify-between py-3 md:py-0 md:h-16 gap-3 md:gap-0">
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="font-black tracking-wider text-black text-xl uppercase">
               {siteData.global.logoText}
             </span>
           </div>
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-3">
+          
+          {/* 移除 hidden，添加移动端横向滚动 (overflow-x-auto) 和隐藏滚动条 (no-scrollbar) */}
+          <div className="w-full md:w-auto overflow-x-auto no-scrollbar pb-1 md:pb-0">
+            <div className="flex items-center space-x-2 md:space-x-3 min-w-max px-1">
               {siteData.global.tabs.map((tab) => {
                 const IconComponent = iconMap[tab.iconName];
                 const isActive = activeTab === tab.id;
@@ -317,12 +349,12 @@ const NavBar = ({ activeTab, setActiveTab }: any) => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-5 py-2 rounded-xl text-sm font-black transition-all duration-200 flex items-center gap-2 border-[3px] border-black
+                    className={`px-4 py-2 md:px-5 md:py-2 rounded-xl text-sm font-black transition-all duration-200 flex items-center gap-1.5 md:gap-2 border-[3px] border-black shrink-0
                       ${isActive 
                         ? 'bg-black text-white shadow-[0_0_0_0_#000] translate-y-1 translate-x-1' 
-                        : 'bg-white text-black shadow-[4px_4px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0_0_#000]'}`}
+                        : 'bg-white text-black shadow-[3px_3px_0_0_#000] md:shadow-[4px_4px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0_0_#000]'}`}
                   >
-                    {IconComponent && <IconComponent size={18} strokeWidth={isActive ? 3 : 2.5} />}
+                    {IconComponent && <IconComponent size={16} className="md:w-[18px] md:h-[18px]" strokeWidth={isActive ? 3 : 2.5} />}
                     {tab.label}
                   </button>
                 )
@@ -511,11 +543,15 @@ const PortfolioView = () => {
 };
 
 const DataView = () => {
-  const { title, legend, yAxisMax, yAxisLabels, chartData } = siteData.data;
+  // 注意：解构取出 categoryData
+  const { title, legend, yAxisMax, yAxisLabels, chartData, proportionData, anomalyData, categoryData } = siteData.data;
   
   const [sortBy, setSortBy] = useState(null);
 
   const sortedData = sortBy ? [...chartData].sort((a, b) => b[sortBy] - a[sortBy]) : chartData;
+
+  // 计算品类占比最大值，用于视觉比例尺 (让最高占比的项填满进度条)
+  const maxCategoryPercentage = Math.max(...categoryData.items.map(item => item.percentage));
 
   return (
     <div className="animate-in fade-in duration-500 max-w-5xl mx-auto">
@@ -601,6 +637,128 @@ const DataView = () => {
           </div>
         </div>
       </div>
+
+      {/* 新增：产出比例图表模块 */}
+      <div className="mt-20">
+        <h2 className="text-4xl md:text-5xl font-black text-black tracking-tight inline-block px-6 py-3 bg-[#FFD074] border-[4px] border-black shadow-[6px_6px_0_0_#000] -rotate-1 mb-12">
+          {proportionData.title}
+        </h2>
+        
+        <div className="bg-white p-8 border-[4px] border-black rounded-3xl shadow-[10px_10px_0_0_#000]">
+          {/* 粗野主义水平堆叠条形图 */}
+          <div className="w-full h-16 md:h-24 flex border-[4px] border-black rounded-2xl overflow-hidden shadow-[6px_6px_0_0_#000] mb-10">
+            {proportionData.items.map((item, idx) => (
+              <div 
+                key={item.id} 
+                className={`h-full ${item.colorClass} flex items-center justify-center group relative ${idx !== proportionData.items.length - 1 ? 'border-r-[4px] border-black' : ''}`}
+                style={{ width: `${item.percentage}%` }}
+              >
+                {/* 悬停时显示具体百分比 */}
+                <span className="opacity-0 group-hover:opacity-100 transition-opacity font-black text-black text-lg md:text-2xl drop-shadow-md cursor-default select-none">
+                  {item.percentage}%
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* 比例图表说明卡片 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {proportionData.items.map(item => (
+              <div key={item.id} className="border-[4px] border-black rounded-2xl p-6 bg-[#f4f1ea] shadow-[4px_4px_0_0_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] transition-all relative overflow-hidden group cursor-default">
+                {/* 纯装饰：右上角的折角波普元素 */}
+                <div className={`absolute top-0 right-0 w-16 h-16 ${item.colorClass} border-b-[4px] border-l-[4px] border-black rounded-bl-3xl translate-x-8 -translate-y-8 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-300`}></div>
+                
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`w-5 h-5 ${item.colorClass} border-[3px] border-black rounded-md shadow-[2px_2px_0_0_#000]`}></div>
+                  <h3 className="text-xl font-black text-black relative z-10">{item.name}</h3>
+                </div>
+                
+                <div className="flex items-end gap-2 mb-1 relative z-10">
+                  <span className="text-4xl font-black text-black leading-none">{item.percentage}</span>
+                  <span className="text-xl font-black text-black pb-1">%</span>
+                </div>
+                <p className="text-sm font-bold text-black/60 uppercase tracking-widest relative z-10">计约 {item.count} 款</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 新增：品类产出占比模块 (已上调) */}
+      <div className="mt-20">
+        <h2 className="text-4xl md:text-5xl font-black text-black tracking-tight inline-block px-6 py-3 bg-[#FF90E8] border-[4px] border-black shadow-[6px_6px_0_0_#000] -rotate-2 mb-12">
+          {categoryData.title}
+        </h2>
+        
+        <div className="bg-white p-8 border-[4px] border-black rounded-3xl shadow-[10px_10px_0_0_#000]">
+          {/* 使用网格阵列展示各品类的专属进度条 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {categoryData.items.map((item, idx) => {
+              const rotateClass = idx % 2 === 0 ? 'hover:rotate-1' : 'hover:-rotate-1';
+              return (
+                <div key={item.id} className={`border-[4px] border-black rounded-2xl p-6 bg-[#f4f1ea] shadow-[6px_6px_0_0_#000] hover:-translate-y-2 hover:shadow-[10px_10px_0_0_#000] transition-all flex flex-col justify-between group cursor-default ${rotateClass}`}>
+                  <h3 className="text-lg md:text-xl font-black text-black leading-snug mb-8">{item.name}</h3>
+                  <div>
+                    <div className="flex justify-between items-end mb-2">
+                      <span className="text-black font-bold uppercase tracking-widest text-xs">占比</span>
+                      <span className="text-3xl font-black text-black">{item.percentage}%</span>
+                    </div>
+                    {/* 波普风进度条 */}
+                    <div className="w-full h-6 border-[4px] border-black rounded-full overflow-hidden bg-white shadow-[inset_2px_2px_0_rgba(0,0,0,0.1)] relative">
+                      <div
+                        className={`absolute left-0 top-0 bottom-0 ${item.colorClass} border-r-[4px] border-black group-hover:brightness-110 transition-all duration-1000 ease-out`}
+                        style={{ width: `${(item.percentage / maxCategoryPercentage) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* 新增：异常与搁置项目归因模块 (已下调) */}
+      <div className="mt-20">
+        <h2 className="text-4xl md:text-5xl font-black text-black tracking-tight inline-block px-6 py-3 bg-[#26D0CE] border-[4px] border-black shadow-[6px_6px_0_0_#000] rotate-1 mb-12">
+          {anomalyData.title}
+        </h2>
+        
+        <div className="bg-white p-8 border-[4px] border-black rounded-3xl shadow-[10px_10px_0_0_#000]">
+          {/* 粗野主义紧凑型水平比例条 */}
+          <div className="w-full h-10 md:h-12 flex border-[4px] border-black rounded-xl overflow-hidden shadow-[4px_4px_0_0_#000] mb-10">
+            {anomalyData.items.map((item, idx) => (
+              <div 
+                key={item.id} 
+                className={`h-full ${item.colorClass} flex items-center justify-center group relative hover:brightness-110 transition-all ${idx !== anomalyData.items.length - 1 ? 'border-r-[4px] border-black' : ''}`}
+                style={{ width: `${item.percentage}%` }}
+              >
+                <span className="opacity-0 group-hover:opacity-100 transition-opacity font-black text-black text-sm drop-shadow-md cursor-default select-none">
+                  {item.percentage}%
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* 归因说明卡片 (2x2 网格设计) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {anomalyData.items.map((item, idx) => (
+              <div key={item.id} className="border-[4px] border-black rounded-2xl p-6 bg-white shadow-[6px_6px_0_0_#000] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0_0_#000] transition-all flex items-center justify-between group cursor-default">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 shrink-0 ${item.colorClass} border-[3px] border-black rounded-full flex items-center justify-center shadow-[inset_2px_2px_0_rgba(255,255,255,0.5)] group-hover:rotate-[24deg] transition-transform duration-300`}>
+                    <span className="font-black text-black text-lg">{idx + 1}</span>
+                  </div>
+                  <h3 className="text-lg md:text-xl font-black text-black leading-snug">{item.name}</h3>
+                </div>
+                <div className="text-3xl md:text-4xl font-black text-black border-l-[4px] border-black pl-5 ml-4 group-hover:scale-110 transition-transform origin-right">
+                  {item.percentage}%
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };
@@ -663,6 +821,8 @@ const AssetsView = () => {
   const { banner, sop, plugins } = siteData.assets;
   
   const [showLongImage, setShowLongImage] = useState(false);
+  // 新增：用于单独放大 SOP 图片的状态
+  const [previewImage, setPreviewImage] = useState(null);
 
   return (
     <div className="animate-in fade-in duration-500 space-y-16">
@@ -689,20 +849,27 @@ const AssetsView = () => {
       </section>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8">
-        <section className="bg-white border-[4px] border-black rounded-3xl p-8 shadow-[8px_8px_0_0_#000]">
+        <section className="bg-white border-[4px] border-black rounded-3xl p-8 shadow-[8px_8px_0_0_#000] overflow-hidden">
           <h2 className="text-3xl font-black text-black mb-10 tracking-tight inline-block border-b-[4px] border-black pb-2">{sop.title}</h2>
-          <div className="space-y-6">
-             {sop.steps.map((step, idx) => (
-               <div key={step.id} className="flex gap-6 items-start p-5 bg-[#f4f1ea] border-[3px] border-black rounded-2xl shadow-[4px_4px_0_0_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] transition-all">
-                 <div className="w-12 h-12 shrink-0 bg-[#38E662] border-[3px] border-black rounded-full flex items-center justify-center font-black text-black text-xl shadow-[2px_2px_0_0_#000]">
-                   {idx + 1}
-                 </div>
-                 <div>
-                   <h4 className="text-black font-black text-xl">{step.title}</h4>
-                   <p className="text-black/70 font-bold mt-2 text-sm">{step.desc}</p>
-                 </div>
-               </div>
-             ))}
+          
+          {/* 新增：波普风胶片滑动走马灯 */}
+          <div className="relative w-full border-[4px] border-black rounded-xl overflow-hidden bg-[#f4f1ea] shadow-[inset_4px_4px_0_rgba(0,0,0,0.1)] py-4">
+            <div className="absolute top-2 right-2 bg-black text-white text-xs font-black px-3 py-1 border-2 border-white rounded shadow-[2px_2px_0_0_#fff] z-10 pointer-events-none">
+              悬停暂停 / 点击放大
+            </div>
+            
+            <div className="animate-marquee gap-6 px-4">
+               {/* 把图片数组渲染两遍，以实现无缝首尾相连的滚动效果 */}
+               {[...sop.images, ...sop.images].map((img, idx) => (
+                 <img 
+                   key={idx} 
+                   src={img} 
+                   alt={`SOP Page ${idx}`} 
+                   onClick={() => setPreviewImage(img)}
+                   className="h-64 md:h-80 w-auto object-cover border-[3px] border-black rounded-xl shadow-[6px_6px_0_0_#000] cursor-pointer hover:-translate-y-2 hover:shadow-[10px_10px_0_0_#000] transition-all shrink-0" 
+                 />
+               ))}
+            </div>
           </div>
         </section>
 
@@ -751,6 +918,31 @@ const AssetsView = () => {
                 className="w-full h-auto border-[4px] border-black shadow-[16px_16px_0_0_#FF90E8] bg-white rounded-xl" 
               />
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 新增：SOP 单图全屏查看模态框 */}
+      {previewImage && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-12 animate-in fade-in zoom-in-95 duration-200"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div 
+            className="relative max-w-5xl w-full h-full flex items-center justify-center"
+            onClick={e => e.stopPropagation()} 
+          >
+            <img 
+              src={previewImage} 
+              alt="SOP Preview" 
+              className="max-w-full max-h-[90vh] object-contain border-[4px] border-black shadow-[16px_16px_0_0_#26D0CE] bg-white rounded-xl" 
+            />
+            <button 
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-6 -right-2 md:-top-8 md:-right-8 w-12 h-12 md:w-16 md:h-16 bg-[#FFD074] border-[4px] border-black rounded-full flex items-center justify-center hover:scale-110 hover:rotate-90 transition-all shadow-[6px_6px_0_0_#000] z-10"
+            >
+              <X size={32} strokeWidth={3} className="text-black" />
+            </button>
           </div>
         </div>
       )}
@@ -803,6 +995,20 @@ export default function App() {
       .hover-brutal-shake:hover {
         animation: brutal-shake 0.3s ease-in-out infinite;
       }
+
+      /* 新增：SOP 无缝走马灯动画 */
+      @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      .animate-marquee {
+        display: flex;
+        width: max-content;
+        animation: marquee 25s linear infinite;
+      }
+      .animate-marquee:hover {
+        animation-play-state: paused;
+      }
       
       /* 自定义滚动条样式，使其符合波普风格 */
       .custom-scrollbar::-webkit-scrollbar {
@@ -820,6 +1026,15 @@ export default function App() {
       }
       .custom-scrollbar::-webkit-scrollbar-thumb:hover {
         background-color: #FF90E8;
+      }
+
+      /* 新增：隐藏移动端导航栏的默认细小滚动条，使其更清爽 */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
     `;
     document.head.appendChild(style);
